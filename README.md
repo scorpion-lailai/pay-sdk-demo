@@ -1,7 +1,7 @@
 
 ### 项目介绍
     介绍：集成一些常用的支付，包含：
-        1.paypal
+        1.PayPal
             - 订单支付
             - 订阅支付
         2.微信支付
@@ -15,9 +15,9 @@
         4.苹果内购支付
 
 #### 项目框架:
-    1. 基础框架：SpringBoot2.3.7
-    2. 接口文档：swagger+knife4j
-    3. 日志框架：logback
+    1. 基础框架：Spring-Boot-[2.3.7-RELEASE]
+    2. 接口文档：Swagger+Knife4j
+    3. 日志框架：Logback
     4. 项目环境：JDK1.8+
     5. 多语言/国际化：i18n
 
