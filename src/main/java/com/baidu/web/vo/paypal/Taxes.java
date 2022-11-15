@@ -1,0 +1,1 @@
+package com.baidu.web.vo.paypal;import lombok.Data;/** * @author xzll * @date 2021/10/8 20:23 * @description */@Datapublic class Taxes {    /**     * 开单金额的税率。     * 适配正则：^ ((- ? [0-9] +) | (- ? ([0-9] +) ? [ . ][0-9] +) $     */    private String percentage;    /**     * 指示税款是否已包含在账单金额中。     */    private Boolean inclusive;}

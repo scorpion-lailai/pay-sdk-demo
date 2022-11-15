@@ -1,0 +1,1 @@
+package com.baidu.web.vo.paypal;import com.fasterxml.jackson.annotation.JsonProperty;import lombok.Data;/** * @author xzll * @date 2021/10/11 11:14 * @description */@Datapublic class SetupFee {    /**     * 整数 最大长度32     */    private String value;    /**     * 货币代码     */    @JsonProperty(value = "currency_code")    private String currencyCode;}

@@ -1,0 +1,1 @@
+package com.baidu.web.vo.paypal;/** * @author xzll * @date 2021/9/26 17:19 * @description */public enum PaypalPaymentMethod{    credit_card, paypal}

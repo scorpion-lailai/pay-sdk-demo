@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "spring.meFssages.basename",
+      "type": "java.lang.String",
+      "description": "Description for spring.meFssages.basename."
+  }
+] }
