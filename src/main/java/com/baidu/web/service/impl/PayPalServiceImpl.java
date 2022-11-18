@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baidu.base.exception.Errors;
 import com.baidu.base.exception.ResultException;
 import com.baidu.base.json.JSONUtils;
+import com.baidu.base.utils.pay.PayConfig;
 import com.baidu.web.service.PayPalService;
 import com.baidu.web.vo.subscription.ApplicationContext;
 import com.baidu.web.vo.subscription.DetailsResponse;
@@ -14,9 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,25 +25,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Service("paypalService")
+@Slf4j
+public class PayPalServiceImpl implements PayPalService {
 
-public class PayServiceImpl implements PayPalService {
+    private static final String PAYPAL_KEY = PayConfig.paypalKey;
+    private static final String PAYPAL_SECRET = PayConfig.paypalSecret;
+    private static final String PAYPAL_MODE = PayConfig.paypalMode;
+    private static final String PAYPAL_BASE_URL = PayConfig.paypalMode;
+    public static final String PAYPAL_CANCEL_URL = PayConfig.paypalCancelUrl;
+    public static final String PAYPAL_RETURN_URL = PayConfig.paypalReturnUrl;
 
-    @Value("${paypal.key}")
-    private String PAYPAL_KEY;
-    @Value("${paypal.secret}")
-    private String PAYPAL_SECRET;
-    @Value("${paypal.mode}")
-    private String PAYPAL_MODE;
-    @Value("${paypal.base.url}")
-    private String PAYPAL_BASE_URL;
-
-    //PAYPAL支付取消的跳转url
-    public static final String PAYPAL_CANCEL_URL = "https://www.baidu.com/s?wd=支付取消";
-    //PAYPAL支付成功后，前端跳转的页面
-    public static final String PAYPAL_RETURN_URL = "https://www.baidu.com/s?wd=支付成功";
-    //日志
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public void paypalNotify(String paymentId, String payerId) {
         //通过支付的回调再次进行查询支付信息
@@ -65,9 +56,9 @@ public class PayServiceImpl implements PayPalService {
             Long orderId = Long.valueOf(transaction.getCustom());
             //支付完成,写入数据库
             //orderService.finish(orderId, transactionId, new BigDecimal(total));
-            logger.info("订单总价为:{},transactionId为:{},orderId:{}", total, transactionId, orderId);
+            log.info("订单总价为:{},transactionId为:{},orderId:{}", total, transactionId, orderId);
         } catch (Exception e) {
-            logger.error("支付失败", e);
+            log.error("支付失败", e);
             throw new ResultException(Errors.PAY_FAIL);
         }
     }
@@ -138,9 +129,9 @@ public class PayServiceImpl implements PayPalService {
         APIContext apiContext = new APIContext(PAYPAL_KEY, PAYPAL_SECRET, PAYPAL_MODE);
         try {
             payment = payment.create(apiContext);
-            logger.info("[paypal支付]-[生成订单]->{}", payment);
+            log.info("[paypal支付]-[生成订单]->{}", payment);
         } catch (PayPalRESTException e) {
-            logger.error("paypal支付异常", e);
+            log.error("paypal支付异常", e);
             throw new ResultException(Errors.ERROR);
         }
         List<Links> links = payment.getLinks();
@@ -156,7 +147,7 @@ public class PayServiceImpl implements PayPalService {
                 link -> link.getRel().equals(rel)).collect(Collectors.toList()
         );
         if (collect.isEmpty()) {
-            logger.error("未从paypal获取到支付链接");
+            log.error("未从paypal获取到支付链接");
             throw new ResultException(Errors.ERROR);
         } else
             return collect.get(0);
@@ -168,7 +159,7 @@ public class PayServiceImpl implements PayPalService {
                 .basicAuth(PAYPAL_KEY, PAYPAL_SECRET)
                 .form("grant_type", "client_credentials")
                 .execute().body();
-        logger.info("[paypal支付]-[获取token]->{}", body);
+        log.info("[paypal支付]-[获取token]->{}", body);
         JSONObject jsonObject = JSONObject.parseObject(body);
         return jsonObject.get("access_token").toString();
     }
@@ -185,7 +176,7 @@ public class PayServiceImpl implements PayPalService {
                 .basicAuth(PAYPAL_KEY, PAYPAL_SECRET)
                 .body(string)
                 .execute().body();
-        logger.info("[paypal支付]-[创建订阅]->{}", body);
+        log.info("[paypal支付]-[创建订阅]->{}", body);
         JSONObject jsonObject = JSONObject.parseObject(body);
         List<Links> links = JSONObject.parseArray(jsonObject.get("links").toString(), Links.class);
         return getRelLink(links, "approve").getHref();
@@ -209,7 +200,7 @@ public class PayServiceImpl implements PayPalService {
         try {
             string = new ObjectMapper().writeValueAsString(subscriptionDTO);
         } catch (Exception e) {
-            logger.error("创建订阅失败", e);
+            log.error("创建订阅失败", e);
             throw new ResultException(Errors.ERROR);
         }
         return string;
@@ -227,7 +218,8 @@ public class PayServiceImpl implements PayPalService {
         Long orderId = Long.valueOf(customId);
         //订单完成，写入数据库
         // orderService.finish(orderId, id, value);
-        logger.info("orderId为:{},订单金额为:{},订阅ID为:{}", orderId, value, subscriptionId);
+        log.info("此处需要写入数据库，做后续处理");
+        log.info("orderId为:{},订单金额为:{},订阅ID为:{}", orderId, value, subscriptionId);
     }
 
     public DetailsResponse getSubscriptionsDetail(String id) {
@@ -240,9 +232,7 @@ public class PayServiceImpl implements PayPalService {
                 .basicAuth(PAYPAL_KEY, PAYPAL_SECRET)
                 .body("")
                 .execute().body();
-        logger.info("[paypal支付]-[订阅详情]->{}", body);
+        log.info("[paypal支付]-[订阅详情]->{}", body);
         return JSONUtils.string2JavaBean(body, DetailsResponse.class);
     }
-
-
 }

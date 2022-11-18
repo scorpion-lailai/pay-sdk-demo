@@ -23,31 +23,32 @@ public class PayPalController {
             "<font color = 'red'>" +
                     "订阅支付要先创建商品哦" +
                     "</font>";
+
     @ApiOperation(value = "paypal订单支付")
-    @PostMapping("paypal/order/pay")
+    @PostMapping("order/pay")
     public String paypalOrderPay(Long orderId, BigDecimal orderMoney) {
         Object payLink = paypalService.paypalOrderPay(orderMoney, orderId);
         return Result.ok(payLink);
     }
 
     @ApiOperation(value = "paypal订阅支付", notes = SUB_PAY_NOTES)
-    @PostMapping("paypal/subscription/pay")
+    @PostMapping("subscription/pay")
     public String paypalOrderPay(String planId, Long orderId) {
         Object payLink = paypalService.createSubscription(planId, orderId);
         return Result.ok(payLink);
     }
 
-    @PostMapping("paypal/subscription/notify")
+    @PostMapping("subscription/notify")
     @ApiOperation(value = "订阅支付回调")
     public String paypalSubscriptionNotify(String subscriptionId) {
         paypalService.subscriptionNotify(subscriptionId);
         return Result.ok();
     }
 
-    @PostMapping("paypal/order/notify")
+    @PostMapping("order/notify")
     @ApiOperation(value = "订单支付回调")
-    public String paypalNotify(String paymentId, String PayerID) {
-        paypalService.paypalNotify(paymentId, PayerID);
+    public String paypalNotify(String paymentId, String PayerId) {
+        paypalService.paypalNotify(paymentId, PayerId);
         return Result.ok();
     }
 

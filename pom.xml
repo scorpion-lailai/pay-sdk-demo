@@ -17,7 +17,26 @@
         <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
     </properties>
 
+
     <dependencies>
+        <!--        auto-configure -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- alipay -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.7.4.ALL</version>
+        </dependency>
+        <!-- 微信支付 -->
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-apache-httpclient</artifactId>
+            <version>0.4.0</version>
+        </dependency>
         <!--swagger配置 -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -151,6 +170,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -167,6 +187,12 @@
                 <version>2.3.7.RELEASE</version>
                 <configuration>
                     <mainClass>com.baidu.web.PayApplication</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
