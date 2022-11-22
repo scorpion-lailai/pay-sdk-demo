@@ -29,7 +29,6 @@ public class AliPayController {
             @ApiImplicitParam(name = "amount", value = "金额"),
             @ApiImplicitParam(name = "returnUrl", value = "支付成功后的跳转页面"),
     })
-
     public String alipayPC(Long orderId, String returnUrl, BigDecimal amount) {
         return Result.ok(alipayService.alipayPC(orderId, returnUrl, amount));
     }
@@ -55,7 +54,7 @@ public class AliPayController {
     }
 
     @PostMapping("alipay/notify")
-    @ApiOperation(value = "支付宝--->[新]", hidden = true)
+    @ApiOperation(value = "支付宝", hidden = true)
     public String alipayNotify(HttpServletRequest request) {
         try {
             alipayService.alipayNotify(request);

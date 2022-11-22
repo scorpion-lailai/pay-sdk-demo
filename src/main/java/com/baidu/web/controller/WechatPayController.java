@@ -26,7 +26,7 @@ public class WechatPayController {
     private WechatPayService wechatPayService;
 
     @PostMapping("app")
-    @ApiOperation(value = "微信app支付--->[新]")
+    @ApiOperation(value = "微信app支付", notes = "返回结果已经拼装好了，给客户端即可调起SDK")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单号"),
             @ApiImplicitParam(name = "amount", value = "金额"),
@@ -36,7 +36,7 @@ public class WechatPayController {
     }
 
     @PostMapping("pc")
-    @ApiOperation(value = "微信pc支付--->[新]")
+    @ApiOperation(value = "微信pc支付")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单号"),
             @ApiImplicitParam(name = "amount", value = "金额"),
@@ -46,7 +46,7 @@ public class WechatPayController {
     }
 
     @PostMapping("h5")
-    @ApiOperation(value = "微信h5支付--->[新]")
+    @ApiOperation(value = "微信h5支付")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单号"),
             @ApiImplicitParam(name = "amount", value = "金额"),
@@ -56,7 +56,7 @@ public class WechatPayController {
     }
 
     @PostMapping("miniProgram")
-    @ApiOperation(value = "微信小程序支付--->[新]")
+    @ApiOperation(value = "微信小程序支付")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单号"),
             @ApiImplicitParam(name = "amount", value = "金额"),
@@ -67,7 +67,7 @@ public class WechatPayController {
     }
 
     @PostMapping("notify")
-    @ApiOperation(value = "微信支付回调--->[新]")
+    @ApiOperation(value = "微信支付回调")
     public String wechatNotify(HttpServletRequest request) {
         try {
             wechatPayService.wechatPayNotify(request);
